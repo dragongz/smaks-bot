@@ -1,8 +1,9 @@
 <?php
 $url = $_POST['url'];
-start($url);
+
 
 //pass the arguments
+// testing git hub
 
 function start($url){
     $web_page = @file_get_contents($url);
