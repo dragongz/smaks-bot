@@ -1,73 +1,55 @@
+<?php
+$url = $_POST['url'];
+start($url);
 
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Web Crawler</title>
-</head>
-<style type="text/css">
-	body{
-		background-color: #222333;
-		padding-left:150px; 
-		padding-right:150px;
-	}
-	p{
-		font-family: arial;
-		font-size:15px;
-	}
-	h3,p,header{
-		color:#AACCFF;
-		font-family:arial;
-	}
-	input[type=text]{
-    width: 80%;
-    padding: 12px 10px;
-    margin: 8px 0;
-    border: 1px solid #AACCFF;
-    border-radius: 5px;
-    }
-    input[type=submit]{
-    	padding: 12px 10px;
-    	border-radius: 5px;
-    	width: 15%;
-    	border-width: 0px;
-    	cursor: pointer;
-    	background-color: #4CAF50;
-    }
-    footer{
-    	text-align: center;
-    	padding: 4px 5px;
-    	border-radius: 5px;
-    	border: 1px;
-    	color: #AACCFF;
-    	font-family: arial;
-    	float: bottom;
-    	background-color: #000000;
-    }
-    #body{
-    	height: 600px;
+//pass the arguments
+
+function start($url){
+    $web_page = @file_get_contents($url);
+    preg_match_all("/(http:\/\/www\.(.*)\/| https:\/\/www\.(.*)\/)/U", $url, $matches);     // for getting the base url 
+    $base_url = $matches[2][0]; 
+    preg_match_all("/<a\s.*href=\"(.*)\"/U", $web_page, $matches);                          // filtering urls
+    $links = $matches[1];                                                                   // all the links found
+    $all_links = array();
+    link_filter($links,$url,$base_url,$all_links);
+    link_traverse($all_links);
+}
+
+
+function link_filter($links, $url, $base_url, &$all_links){
+     
+    for ($i=0; $i < count($links); $i++) { 
+        
+        if($links[$i][strlen($links[$i])-1]!="/")
+        {
+            $links[$i] = $links[$i]."/";
+        }
+
+        if($links[$i][0] == "/")                                                        // removing the initial "/"
+        {
+            $links[$i] = substr($links[$i], 1);
+            array_push($all_links, $url.$links[$i]);
+        }
+
+        if($links[$i][0] != "#" && preg_match("/.*".($base_url).".*/U", $links[$i]))
+        {
+            if(preg_match("/http.*/U", $links[$i]))
+                {
+                    array_push($all_links, $links[$i]);
+                }
+                else
+                {
+                    array_push($all_links, $url.$links[$i]);
+                }
+        }    
     }
 }
-</style>
-<body>
 
 
+function link_traverse(&$all_links){
+    for ($i=0; $i < count($all_links); $i++) {
+        echo $all_links[$i]."<br>";
+    }    
+}
 
-<div id="body">
-<div style="font-size: 60px">
-	<header>Web Crawler</header>
-</div>
-<br><br>
-<h3>Smaks Bot</h3><br>
-<p>This is a web crawler used for crawling web pages and analysing its contents.<br>It can also be used to index web pages.</p>
-
-
-<p>
-<form method="post" action="link.php">
-<input type="text" name="url" placeholder="Enter an URL to crawl">
-<input type="submit" value="Crawl">
-</form>
-</p>
-</div>
-<footer>Copyright @ Avinash Gaikwad</footer>
-</body>
-</html>
+?>
