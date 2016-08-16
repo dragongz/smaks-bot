@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Crawler</title>
+</head>
+<style type="text/css">
+	body{
+		background-color: #222333;
+		padding-left:150px; 
+		padding-right:150px;
+	}
+	p{
+		font-family: arial;
+		font-size:15px;
+	}
+	h3,p,header{
+		color:#AACCFF;
+		font-family:arial;
+	}
+	input[type=text]{
+    width: 80%;
+    padding: 12px 10px;
+    margin: 8px 0;
+    border: 1px solid #AACCFF;
+    border-radius: 5px;
+    }
+    input[type=submit]{
+    	padding: 12px 10px;
+    	border-radius: 5px;
+    	width: 15%;
+    	border-width: 0px;
+    	cursor: pointer;
+    	background-color: #4CAF50;
+    }
+    footer{
+    	text-align: center;
+    	padding: 4px 5px;
+    	border-radius: 5px;
+    	border: 1px;
+    	color: #AACCFF;
+    	font-family: arial;
+    	float: bottom;
+    	background-color: #000000;
+    }
+    #body{
+    	height: 600px;
+    }
+}
+</style>
+<body>
+
+
+
+<div id="body">
+<div style="font-size: 60px">
+	<header>Web Crawler</header>
+</div>
+<br><br>
+<h3>Smaks Bot</h3><br>
+<p>This is a web crawler used for crawling web pages and analysing its contents.<br>It can also be used to index web pages.</p>
+
+
+<p>
+<form method="post" action="link.php">
+<input type="text" name="url" placeholder="Enter an URL to crawl">
+<input type="submit" value="Crawl">
+</form>
+</p>
+</div>
+<footer>Copyright @ Avinash Gaikwad</footer>
+</body>
+</html>
