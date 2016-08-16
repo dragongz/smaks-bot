@@ -1,6 +1,6 @@
 <?php
 $url = $_POST['url'];
-
+start($url);
 
 //pass the arguments
 // testing git hub
