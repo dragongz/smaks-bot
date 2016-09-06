@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
 require '/etc/phpmyadmin/conf.d/vendor/autoload.php';
 
 $url = "";
@@ -55,11 +59,63 @@ function link_filter(&$links, $url, $base_url, &$all_links){
         }else if(preg_match_all('/\/MAILTO:(.*)/iU', $links[$i],$matches))
         {
             $email = substr($links[$i], 8);     //entry
+<<<<<<< HEAD
+=======
+=======
+$url = $_POST['url'];
+start($url);
+
+//pass the arguments
+// testing git hub
+
+function start($url){
+    $web_page = @file_get_contents($url);
+    preg_match_all("/(http:\/\/www\.(.*)\/| https:\/\/www\.(.*)\/)/U", $url, $matches);     // for getting the base url 
+    $base_url = $matches[2][0]; 
+    preg_match_all("/<a\s.*href=\"(.*)\"/U", $web_page, $matches);                          // filtering urls
+    $links = $matches[1];                                                                   // all the links found
+    $all_links = array();
+    link_filter($links,$url,$base_url,$all_links);
+    link_traverse($all_links);
+}
+
+
+function link_filter($links, $url, $base_url, &$all_links){
+     
+    for ($i=0; $i < count($links); $i++) { 
+        
+        if($links[$i][strlen($links[$i])-1]!="/")
+        {
+            $links[$i] = $links[$i]."/";
+        }
+
+        if($links[$i][0] == "/")                                                        // removing the initial "/"
+        {
+            $links[$i] = substr($links[$i], 1);
+            array_push($all_links, $url.$links[$i]);
+        }
+
+        if($links[$i][0] != "#" && preg_match("/.*".($base_url).".*/U", $links[$i]))
+        {
+            if(preg_match("/http.*/U", $links[$i]))
+                {
+                    array_push($all_links, $links[$i]);
+                }
+                else
+                {
+                    array_push($all_links, $url.$links[$i]);
+                }
+>>>>>>> f5f4e90de13a41589a2982d8875d40bc02d6054c
+>>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
         }    
     }
 }
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
 
 function link_traverse(&$all_links,&$web,$url){
     preg_match("/<title>(.*)<\/title>/siU", $web, $matches);
@@ -102,4 +158,17 @@ function link_traverse(&$all_links,&$web,$url){
 
     
 
+<<<<<<< HEAD
 ?>
+=======
+?>
+=======
+function link_traverse(&$all_links){
+    for ($i=0; $i < count($all_links); $i++) {
+        echo $all_links[$i]."<br>";
+    }    
+}
+
+?>
+>>>>>>> f5f4e90de13a41589a2982d8875d40bc02d6054c
+>>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
