@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
 require '/etc/phpmyadmin/conf.d/vendor/autoload.php';
 
 $url = "";
@@ -19,8 +15,23 @@ function start($url){
     $all_links = array();
     array_push($all_links, $url);
     link_filter($links,$url,$base_url,$all_links);
-    link_traverse($all_links,$web_page,$url);
+    //link_traverse($web_page,$url);
+    $i = 0;
+    crawl($all_links,$web_page,$i);
     }
+
+function crawl($all_links,$web_page,$i){
+            echo "Started"."<br>";
+            link_traverse($web_page,$all_links[$i]);
+            echo "Processed webpage ".$all_links[$i]."<br>";
+            $i++;
+            $web_page = @file_get_contents($all_links[$i]);
+            crawl($all_links,$web_page,$i);
+
+    
+}
+
+
 function link_grab(&$links,&$web_page){
     preg_match_all("/<a\s*\S*.*href=\"(.*)\"/siU", $web_page, $matches);                          // filtering urls
     $links = $matches[1];
@@ -59,71 +70,18 @@ function link_filter(&$links, $url, $base_url, &$all_links){
         }else if(preg_match_all('/\/MAILTO:(.*)/iU', $links[$i],$matches))
         {
             $email = substr($links[$i], 8);     //entry
-<<<<<<< HEAD
-=======
-=======
-$url = $_POST['url'];
-start($url);
-
-//pass the arguments
-// testing git hub
-
-function start($url){
-    $web_page = @file_get_contents($url);
-    preg_match_all("/(http:\/\/www\.(.*)\/| https:\/\/www\.(.*)\/)/U", $url, $matches);     // for getting the base url 
-    $base_url = $matches[2][0]; 
-    preg_match_all("/<a\s.*href=\"(.*)\"/U", $web_page, $matches);                          // filtering urls
-    $links = $matches[1];                                                                   // all the links found
-    $all_links = array();
-    link_filter($links,$url,$base_url,$all_links);
-    link_traverse($all_links);
-}
-
-
-function link_filter($links, $url, $base_url, &$all_links){
-     
-    for ($i=0; $i < count($links); $i++) { 
-        
-        if($links[$i][strlen($links[$i])-1]!="/")
-        {
-            $links[$i] = $links[$i]."/";
-        }
-
-        if($links[$i][0] == "/")                                                        // removing the initial "/"
-        {
-            $links[$i] = substr($links[$i], 1);
-            array_push($all_links, $url.$links[$i]);
-        }
-
-        if($links[$i][0] != "#" && preg_match("/.*".($base_url).".*/U", $links[$i]))
-        {
-            if(preg_match("/http.*/U", $links[$i]))
-                {
-                    array_push($all_links, $links[$i]);
-                }
-                else
-                {
-                    array_push($all_links, $url.$links[$i]);
-                }
->>>>>>> f5f4e90de13a41589a2982d8875d40bc02d6054c
->>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
         }    
     }
 }
 
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
 
-function link_traverse(&$all_links,&$web,$url){
+function link_traverse(&$web,$url){
     preg_match("/<title>(.*)<\/title>/siU", $web, $matches);
     $title = $matches[1];
-    //$title = mb_split("\W", $title);
+    $title = mb_split("\W", $title);
     //$url_keys = preg_split("/[\s_\-\/\.]+/", $url);    
-    $meta = get_meta_tags($url);
-    //************************************************************
+    //$meta = get_meta_tags($url);
     $xml = new DOMDocument();
     @$xml->loadHTML($web);
     $links = array();
@@ -132,43 +90,37 @@ function link_traverse(&$all_links,&$web,$url){
     foreach($xml->getElementsByTagName('a') as $link) {
     
     $linkurl[$i] = $link->getAttribute('href');
-    //$linkurl[$i] = mb_split("http\:\/\/www\.|https\:\/\/www\.|\.|\/|_|http\:\/\/|\-|https\:\/\/", $linkurl[$i]);
-    //array_filter($linkurl[$i]);
+    $linkurl[$i] = mb_split("http\:\/\/www\.|https\:\/\/www\.|\.|\/|_|http\:\/\/|\-|https\:\/\/", $linkurl[$i]);
+    array_filter($linkurl[$i]);
     $linktext[$i] = $link->nodeValue;
-    //$linktext[$i] = preg_replace("/\n|\r|/", "", $linktext[$i]);
+    $linktext[$i] = preg_replace("/\n|\r|/", "", $linktext[$i]);
     array_filter($linktext);
-    //$linktext[$i] = mb_split("\W", $linktext[$i]);
-    //array_filter($linktext[$i]);
+    $linktext[$i] = mb_split("\W", $linktext[$i]);
+    array_filter($linktext[$i]);
     $i++;
     }
 
-    $title = preg_replace("/\W/", " ", $title);
+
+    // $mg_url_keys = array();
+    // foreach ($url_keys as $value) {
+    //     if(preg_match("/\w+/", $value)){
+    //     $mg_url_keys[] = array($value => $url);
+    //     }
+    // }
+    
     $conn = new MongoDB\Client;
     $db = $conn->segn;
     $db = $db->crawler;
-    $db->updateOne(
-
-        [$title => $url],
-        ['$set' => [$title => $url]],
-        ['upsert' => true]
-    );    
+    foreach ($title as $key => $value) {
+        if($value != ""){
+        $db->updateOne(["title"=>$value,"url"=>['$ne'=>$url]],['$push'=>["url"=>$url]],['upsert'=>true]);
+        }
+    }
+    
     
     
 }
 
     
 
-<<<<<<< HEAD
 ?>
-=======
-?>
-=======
-function link_traverse(&$all_links){
-    for ($i=0; $i < count($all_links); $i++) {
-        echo $all_links[$i]."<br>";
-    }    
-}
-
-?>
->>>>>>> f5f4e90de13a41589a2982d8875d40bc02d6054c
->>>>>>> 5aace87230515a79f04adb22acd82f12e1a3f362
